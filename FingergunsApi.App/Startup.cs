@@ -1,12 +1,8 @@
-using System;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
+using FingergunsApi.App.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -16,7 +12,8 @@ namespace FingergunsApi.App
 {
     public class Startup
     {
-        private IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
+        private const int DbMaxRetryCount = 10;
 
         public Startup(IConfiguration configuration)
         {
@@ -31,6 +28,13 @@ namespace FingergunsApi.App
             {
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseMySql(_configuration.GetConnectionString("FingergunsDatabase"),
+                    builder => builder.EnableRetryOnFailure(DbMaxRetryCount));
+            });
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FingergunsApi.App", Version = "v1" });
@@ -42,7 +46,7 @@ namespace FingergunsApi.App
         {
             app.UseForwardedHeaders();
 
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() || env.IsLocal())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
