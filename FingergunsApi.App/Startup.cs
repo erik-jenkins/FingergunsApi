@@ -1,4 +1,7 @@
+using System;
 using FingergunsApi.App.Extensions;
+using FingergunsApi.App.Helpers;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -34,11 +37,25 @@ namespace FingergunsApi.App
                 options.UseMySql(_configuration.GetConnectionString("FingergunsDatabase"),
                     builder => builder.EnableRetryOnFailure(DbMaxRetryCount));
             });
-            
+
+            services.AddAuthorization();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+                {
+                    options.Cookie.HttpOnly = true;
+                    options.LoginPath = "/login";
+                    options.LogoutPath = "/logout";
+                    options.ExpireTimeSpan = TimeSpan.FromHours(1);
+                    options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+                    options.SlidingExpiration = true;
+                });
+
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "FingergunsApi.App", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "FingergunsApi.App", Version = "v1"});
             });
+
+            services.AddScoped<IPasswordHelper, PasswordHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,12 +72,10 @@ namespace FingergunsApi.App
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

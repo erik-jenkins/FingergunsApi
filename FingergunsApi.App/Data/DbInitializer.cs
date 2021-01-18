@@ -19,8 +19,8 @@ namespace FingergunsApi.App.Data
                 new User
                 {
                     Email="erik@example.com",
-                    Username="erik",
-                    Hash="test",
+                    DisplayName="erik",
+                    Hash="vbwuN6uWkaaW34HEsksxRYo80qKGjqcoEQTH05LWyfc=",
                     Salt="test"
                 }
             };
