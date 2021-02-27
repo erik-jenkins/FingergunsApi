@@ -1,4 +1,5 @@
 using System;
+using FingergunsApi.App.Data.Repositories;
 using FingergunsApi.App.Extensions;
 using FingergunsApi.App.Helpers;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -56,6 +57,7 @@ namespace FingergunsApi.App
             });
 
             services.AddScoped<IPasswordHelper, PasswordHelper>();
+            services.AddScoped<IUserRepository, UserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

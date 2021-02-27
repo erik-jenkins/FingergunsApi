@@ -1,4 +1,4 @@
-using FingergunsApi.App.Models;
+using FingergunsApi.App.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FingergunsApi.App

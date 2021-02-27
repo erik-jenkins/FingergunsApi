@@ -14,8 +14,8 @@ namespace FingergunsApi.App.Data.Validations
             MinNumber = minNumber;
         }
 
-        public string GetErrorMessage() =>
-            $"Field must contain at least {MinNumber} characters of the specified character set.";
+        private string GetErrorMessage(string displayName) =>
+            $"{displayName} must contain at least {MinNumber} special character{(MinNumber == 1 ? "" : "s")}.";
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
@@ -25,13 +25,14 @@ namespace FingergunsApi.App.Data.Validations
                 .Select(_ => 1)
                 .Sum();
 
-            return numChars < MinNumber ? new ValidationResult(GetErrorMessage()) : ValidationResult.Success;
+            return numChars < MinNumber ? new ValidationResult(GetErrorMessage(validationContext.DisplayName)) : ValidationResult.Success;
         }
     }
 
     public class NumberCharactersAttribute : ValidationAttribute
     {
-        public const string NumberCharacterSet = "1234567890";
+        private const string NumberCharacterSet = "1234567890";
+        
         private int MinNumber { get; }
 
         public NumberCharactersAttribute(int minNumber)
@@ -39,8 +40,8 @@ namespace FingergunsApi.App.Data.Validations
             MinNumber = minNumber;
         }
 
-        public string GetErrorMessage() =>
-            $"Field must contain at least {MinNumber} characters of the specified character set.";
+        private string GetErrorMessage(string displayName) =>
+            $"{displayName} must contain at least {MinNumber} numeric character{(MinNumber == 1 ? "" : "s")}.";
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
@@ -50,7 +51,7 @@ namespace FingergunsApi.App.Data.Validations
                 .Select(_ => 1)
                 .Sum();
 
-            return numChars < MinNumber ? new ValidationResult(GetErrorMessage()) : ValidationResult.Success;
+            return numChars < MinNumber ? new ValidationResult(GetErrorMessage(validationContext.DisplayName)) : ValidationResult.Success;
         }
     }
 }
