@@ -29,7 +29,7 @@ namespace FingergunsApi.App.Extensions
             catch (Exception e)
             {
                 var logger = services.GetRequiredService<ILogger<Program>>();
-                logger.LogError(e, "An error occurred while migrating the database.");
+                logger.LogError(e, "An error occurred while migrating the database");
             }
 
             return host;

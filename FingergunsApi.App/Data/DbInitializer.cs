@@ -1,5 +1,5 @@
 using System.Linq;
-using FingergunsApi.App.Models;
+using FingergunsApi.App.Data.Models;
 
 namespace FingergunsApi.App.Data
 {

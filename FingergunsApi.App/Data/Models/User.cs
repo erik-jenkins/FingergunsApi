@@ -1,11 +1,11 @@
-namespace FingergunsApi.App.Models
+namespace FingergunsApi.App.Data.Models
 {
     public class User
     {
-        public int UserId { get; set; }
-        public string Email { get; set; }
-        public string DisplayName { get; set; }
-        public string Hash { get; set; }
-        public string Salt { get; set; }
+        public int UserId { get; init; }
+        public string Email { get; init; }
+        public string DisplayName { get; init; }
+        public string Hash { get; init; }
+        public string Salt { get; init; }
     }
 }
